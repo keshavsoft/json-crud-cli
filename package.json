@@ -1,0 +1,35 @@
+{
+  "name": "json-crud-cli",
+  "version": "1.1.1",
+  "description": "CLI to scaffold projects using templates",
+  "keywords": [
+    "cli",
+    "scaffold",
+    "templates",
+    "node",
+    "project-generator"
+  ],
+  "dependencies": {
+  },
+  "type": "module",
+  "exports": {
+    ".": "./index.js"
+  },
+  "bin": {
+    "json-crud-cli": "./bin/cli.js"
+  },
+  "files": [
+    "bin/",
+    "index.js",
+    "README.md",
+    "LICENSE"
+  ],
+  "homepage": "https://cli.keshavsoft.com",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/keshavsoft/json-crud-cli"
+  },
+  "bugs": {
+    "url": "https://github.com/keshavsoft/json-crud-cli/issues"
+  }
+}
