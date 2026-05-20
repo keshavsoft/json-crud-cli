@@ -1,16 +1,8 @@
-import init from "../commands/init.js";
-import test from "../commands/test.js";
-import express from "../commands/express.js";
-import tally from "../commands/tally.js";
-import accounts from "../commands/accounts.js";
+import header from "../commands/header.js";
 
 // resolveCommand.js
 const map = {
-    init,
-    test,
-    express,
-    tally,
-    accounts
+    header
 };
 
 export default function resolveCommand(cmd) {

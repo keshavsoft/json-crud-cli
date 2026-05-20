@@ -22,24 +22,18 @@ export default function showUsage(version) {
     const r = "\x1b[0m";
 
     console.log(`
-${c}🚀 KSchema CLI v${version}${r}
+${c}🚀 tailwind-todo v${version}${r}
 
 ${y}Usage:${r}
-  ${g}npx @keshavsoft/kschema-cli${r} <command> [options]
+  ${g}npx tailwind-todo${r} <command> [options]
 
 ${y}Commands:${r}
-  ${g}init${r}              Initialize a new schema setup
-  ${g}express${r}           Initialize a new express project
-  ${g}tally${r}             Initialize a new tally project
-  ${g}generate-samples${r}  Generate sample schema files
-  ${g}accounts${r}          Initialize a new express project for simple accounting
+  ${g}header${r}              a simple header
 
 ${y}Examples:${r}
-  ${gray}npx @keshavsoft/kschema-cli init${r}
-  ${gray}npx @keshavsoft/kschema-cli test users${r}
-  ${gray}npx @keshavsoft/kschema-cli accounts${r}
+  ${gray}npx tailwind-todo header${r}
 
 ${y}Tip:${r}
-  ${gray}npm i -g @keshavsoft/kschema-cli${r}
+  ${gray}npm i -g tailwind-todo${r}
 `);
 }
