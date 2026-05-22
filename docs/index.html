@@ -3,11 +3,10 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>KSchema CLI</title>
+  <title>json-crud-cli</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
     * {
       margin: 0;
@@ -15,541 +14,704 @@
       box-sizing: border-box;
     }
 
+    :root {
+      --bg: #07111f;
+      --card: rgba(16, 25, 45, 0.85);
+      --primary: #00d4ff;
+      --secondary: #8b5cf6;
+      --text: #f8fafc;
+      --muted: #94a3b8;
+      --border: rgba(255,255,255,0.08);
+      --success: #22c55e;
+    }
+
     body {
-      font-family: 'Poppins', sans-serif;
-      background: #0f172a;
-      color: white;
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(135deg, #020617, #07111f, #0f172a);
+      color: var(--text);
+      line-height: 1.7;
       overflow-x: hidden;
     }
 
     body::before {
       content: "";
       position: fixed;
-      width: 500px;
-      height: 500px;
-      background: rgba(59, 130, 246, 0.25);
-      filter: blur(120px);
-      top: -150px;
-      left: -100px;
-      z-index: -1;
-    }
-
-    body::after {
-      content: "";
-      position: fixed;
-      width: 500px;
-      height: 500px;
-      background: rgba(168, 85, 247, 0.25);
-      filter: blur(120px);
-      bottom: -150px;
-      right: -100px;
+      inset: 0;
+      background:
+        radial-gradient(circle at top left, rgba(0,212,255,0.18), transparent 25%),
+        radial-gradient(circle at bottom right, rgba(139,92,246,0.18), transparent 25%);
       z-index: -1;
     }
 
     .container {
-      width: 90%;
-      max-width: 1300px;
+      width: min(1200px, 92%);
       margin: auto;
     }
 
-    header {
-      min-height: 100vh;
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 999;
+      backdrop-filter: blur(14px);
+      background: rgba(2, 6, 23, 0.75);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-inner {
       display: flex;
+      justify-content: space-between;
       align-items: center;
-      justify-content: center;
-      text-align: center;
-      position: relative;
+      padding: 1rem 0;
+    }
+
+    .logo {
+      font-size: 1.3rem;
+      font-weight: 800;
+      color: white;
+    }
+
+    .logo span {
+      color: var(--primary);
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+    }
+
+    .nav-links a {
+      color: var(--muted);
+      text-decoration: none;
+      transition: 0.3s ease;
+      font-size: 0.95rem;
+    }
+
+    .nav-links a:hover {
+      color: var(--primary);
     }
 
     .hero {
-      max-width: 900px;
+      padding: 7rem 0 5rem;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      align-items: center;
+      gap: 3rem;
     }
 
-    .badge {
-      display: inline-block;
-      background: rgba(255,255,255,0.08);
-      border: 1px solid rgba(255,255,255,0.1);
-      padding: 10px 20px;
-      border-radius: 999px;
-      margin-bottom: 25px;
-      font-size: 14px;
-      backdrop-filter: blur(10px);
-    }
-
-    h1 {
-      font-size: 72px;
-      font-weight: 800;
+    .hero h1 {
+      font-size: clamp(2.8rem, 7vw, 5rem);
       line-height: 1.1;
-      margin-bottom: 20px;
-      background: linear-gradient(to right, #ffffff, #60a5fa, #c084fc);
+      margin-bottom: 1.2rem;
+      font-weight: 800;
+    }
+
+    .gradient-text {
+      background: linear-gradient(90deg, var(--primary), #67e8f9, var(--secondary));
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
     }
 
     .hero p {
-      color: #cbd5e1;
-      font-size: 20px;
-      line-height: 1.8;
-      margin-bottom: 40px;
+      color: var(--muted);
+      font-size: 1.05rem;
+      margin-bottom: 2rem;
+      max-width: 620px;
     }
 
-    .buttons {
+    .hero-buttons {
       display: flex;
-      justify-content: center;
-      gap: 20px;
+      gap: 1rem;
       flex-wrap: wrap;
     }
 
     .btn {
-      text-decoration: none;
-      padding: 16px 30px;
+      padding: 0.95rem 1.5rem;
       border-radius: 14px;
+      text-decoration: none;
       font-weight: 600;
       transition: 0.3s ease;
       display: inline-flex;
       align-items: center;
-      gap: 10px;
+      gap: 0.6rem;
     }
 
     .btn-primary {
-      background: linear-gradient(135deg, #2563eb, #7c3aed);
-      color: white;
-      box-shadow: 0 10px 30px rgba(99,102,241,0.4);
+      background: linear-gradient(135deg, var(--primary), #0891b2);
+      color: #001018;
+      box-shadow: 0 12px 30px rgba(0,212,255,0.25);
     }
 
     .btn-primary:hover {
-      transform: translateY(-4px);
+      transform: translateY(-3px);
     }
 
     .btn-secondary {
-      border: 1px solid rgba(255,255,255,0.15);
-      background: rgba(255,255,255,0.05);
+      border: 1px solid var(--border);
       color: white;
-      backdrop-filter: blur(12px);
+      background: rgba(255,255,255,0.03);
     }
 
-    .btn-secondary:hover {
-      background: rgba(255,255,255,0.1);
+    .terminal {
+      background: #020617;
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 24px;
+      overflow: hidden;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+    }
+
+    .terminal-header {
+      display: flex;
+      gap: 0.5rem;
+      padding: 1rem;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      background: rgba(255,255,255,0.03);
+    }
+
+    .dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+    }
+
+    .red { background: #ef4444; }
+    .yellow { background: #f59e0b; }
+    .green { background: #22c55e; }
+
+    .terminal-content {
+      padding: 2rem;
+      font-family: Consolas, monospace;
+      color: #d1fae5;
+      font-size: 0.95rem;
     }
 
     section {
-      padding: 120px 0;
+      padding: 5rem 0;
     }
 
     .section-title {
       text-align: center;
-      margin-bottom: 70px;
+      margin-bottom: 3rem;
     }
 
     .section-title h2 {
-      font-size: 48px;
-      margin-bottom: 15px;
+      font-size: clamp(2rem, 5vw, 3rem);
+      margin-bottom: 1rem;
     }
 
     .section-title p {
-      color: #94a3b8;
-      font-size: 18px;
-    }
-
-    .features-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-      gap: 30px;
-    }
-
-    .feature-card {
-      background: rgba(255,255,255,0.05);
-      border: 1px solid rgba(255,255,255,0.08);
-      border-radius: 24px;
-      padding: 35px;
-      backdrop-filter: blur(16px);
-      transition: 0.4s ease;
-    }
-
-    .feature-card:hover {
-      transform: translateY(-8px);
-      border-color: rgba(96,165,250,0.5);
-      box-shadow: 0 20px 40px rgba(0,0,0,0.4);
-    }
-
-    .feature-icon {
-      font-size: 40px;
-      margin-bottom: 20px;
-    }
-
-    .feature-card h3 {
-      margin-bottom: 15px;
-      font-size: 24px;
-    }
-
-    .feature-card p {
-      color: #cbd5e1;
-      line-height: 1.8;
-    }
-
-    .command-box {
-      background: #020617;
-      border-radius: 20px;
-      border: 1px solid rgba(255,255,255,0.08);
-      padding: 30px;
-      overflow-x: auto;
-      margin-bottom: 30px;
-    }
-
-    .command-box pre {
-      color: #38bdf8;
-      font-size: 16px;
-      line-height: 1.8;
-    }
-
-    .timeline {
-      position: relative;
-      max-width: 900px;
+      color: var(--muted);
+      max-width: 750px;
       margin: auto;
     }
 
-    .timeline::before {
-      content: '';
-      position: absolute;
-      left: 50%;
-      top: 0;
-      width: 4px;
-      height: 100%;
-      background: linear-gradient(to bottom, #3b82f6, #8b5cf6);
-      transform: translateX(-50%);
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
     }
 
-    .timeline-item {
-      position: relative;
-      width: 50%;
-      padding: 30px;
-    }
-
-    .timeline-item:nth-child(odd) {
-      left: 0;
-      text-align: right;
-    }
-
-    .timeline-item:nth-child(even) {
-      left: 50%;
-    }
-
-    .timeline-content {
-      background: rgba(255,255,255,0.05);
-      border: 1px solid rgba(255,255,255,0.08);
-      border-radius: 20px;
-      padding: 25px;
-      backdrop-filter: blur(12px);
-    }
-
-    .timeline-content h3 {
-      margin-bottom: 12px;
-      font-size: 24px;
-    }
-
-    .timeline-content p {
-      color: #cbd5e1;
-      line-height: 1.7;
-    }
-
-    .code-preview {
-      margin-top: 25px;
-      background: #020617;
-      padding: 20px;
-      border-radius: 14px;
-      overflow-x: auto;
-    }
-
-    .code-preview code {
-      color: #22d3ee;
-      line-height: 1.7;
-    }
-
-    .architecture {
-      background: rgba(255,255,255,0.05);
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
       border-radius: 24px;
-      padding: 40px;
-      border: 1px solid rgba(255,255,255,0.08);
-      overflow-x: auto;
+      padding: 2rem;
+      backdrop-filter: blur(18px);
+      transition: 0.3s ease;
     }
 
-    .architecture pre {
-      color: #93c5fd;
-      line-height: 1.8;
-      font-size: 16px;
+    .card:hover {
+      transform: translateY(-6px);
+      border-color: rgba(0,212,255,0.35);
+    }
+
+    .card-icon {
+      width: 60px;
+      height: 60px;
+      display: grid;
+      place-items: center;
+      border-radius: 16px;
+      background: linear-gradient(135deg, rgba(0,212,255,0.2), rgba(139,92,246,0.2));
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .card h3 {
+      margin-bottom: 0.8rem;
+      font-size: 1.2rem;
+    }
+
+    .card p {
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    .code-block {
+      background: #020617;
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 22px;
+      padding: 1.8rem;
+      overflow-x: auto;
+      margin-top: 1.5rem;
+    }
+
+    pre {
+      color: #e2e8f0;
+      font-size: 0.95rem;
+      line-height: 1.7;
+    }
+
+    .steps {
+      display: grid;
+      gap: 1.5rem;
+    }
+
+    .step {
+      display: flex;
+      gap: 1.2rem;
+      background: rgba(255,255,255,0.03);
+      padding: 1.5rem;
+      border-radius: 20px;
+      border: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .step-number {
+      min-width: 50px;
+      height: 50px;
+      border-radius: 14px;
+      display: grid;
+      place-items: center;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      color: #001018;
+      font-weight: 800;
+    }
+
+    .api-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .api-card {
+      padding: 1.8rem;
+      border-radius: 20px;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(255,255,255,0.03);
+    }
+
+    .method {
+      display: inline-block;
+      padding: 0.35rem 0.8rem;
+      border-radius: 999px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+    }
+
+    .get { background: rgba(34,197,94,0.2); color: #4ade80; }
+    .post { background: rgba(59,130,246,0.2); color: #60a5fa; }
+    .put { background: rgba(249,115,22,0.2); color: #fb923c; }
+    .delete { background: rgba(239,68,68,0.2); color: #f87171; }
+
+    .faq {
+      display: grid;
+      gap: 1rem;
+    }
+
+    details {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 18px;
+      padding: 1rem 1.2rem;
+    }
+
+    summary {
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    details p {
+      margin-top: 1rem;
+      color: var(--muted);
     }
 
     footer {
-      padding: 60px 20px;
+      padding: 3rem 0;
+      border-top: 1px solid rgba(255,255,255,0.06);
       text-align: center;
-      border-top: 1px solid rgba(255,255,255,0.08);
-      margin-top: 100px;
+      color: var(--muted);
     }
 
-    footer h3 {
-      font-size: 36px;
-      margin-bottom: 15px;
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1rem;
+      border-radius: 999px;
+      border: 1px solid rgba(0,212,255,0.25);
+      background: rgba(0,212,255,0.08);
+      margin-bottom: 1.2rem;
+      color: #a5f3fc;
+      font-size: 0.9rem;
     }
 
-    footer p {
-      color: #94a3b8;
-      margin-bottom: 30px;
-    }
-
-    @media(max-width: 900px) {
-      h1 {
-        font-size: 48px;
+    @media (max-width: 768px) {
+      .nav-links {
+        display: none;
       }
 
-      .timeline::before {
-        left: 20px;
+      .hero {
+        padding-top: 4rem;
       }
 
-      .timeline-item {
-        width: 100%;
-        padding-left: 60px;
-        padding-right: 0;
+      .hero-buttons {
+        flex-direction: column;
       }
 
-      .timeline-item:nth-child(odd),
-      .timeline-item:nth-child(even) {
-        left: 0;
-        text-align: left;
-      }
-    }
-
-    @media(max-width: 600px) {
-      h1 {
-        font-size: 38px;
-      }
-
-      .hero p {
-        font-size: 17px;
-      }
-
-      .section-title h2 {
-        font-size: 34px;
+      .btn {
+        justify-content: center;
       }
     }
   </style>
 </head>
 <body>
 
-  <header>
+  <nav>
+    <div class="container nav-inner">
+      <div class="logo">json<span>-crud-cli</span></div>
+
+      <div class="nav-links">
+        <a href="#features">Features</a>
+        <a href="#install">Install</a>
+        <a href="#crud">CRUD API</a>
+        <a href="#workflow">Workflow</a>
+        <a href="#faq">FAQ</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container hero">
+    <div>
+      <div class="badge">⚡ Fast JSON CRUD Development Toolkit</div>
+
+      <h1>
+        Build Powerful
+        <span class="gradient-text">CRUD APIs</span>
+      </h1>
+
+      <p>
+        json-crud-cli helps developers quickly create Create, Read, Update, and Delete operations using lightweight JSON-based storage. Perfect for rapid prototyping, local tools, learning backend development, and building simple APIs without a database.
+      </p>
+
+      <div class="hero-buttons">
+        <a href="https://www.npmjs.com/package/json-crud-cli" class="btn btn-primary">📦 View on npm</a>
+        <a href="#install" class="btn btn-secondary">🚀 Get Started</a>
+      </div>
+    </div>
+
+    <div class="terminal">
+      <div class="terminal-header">
+        <div class="dot red"></div>
+        <div class="dot yellow"></div>
+        <div class="dot green"></div>
+      </div>
+
+      <div class="terminal-content">
+<pre>
+$ npm install -g json-crud-cli
+
+✔ Project initialized
+✔ CRUD routes generated
+✔ JSON database connected
+✔ API ready on localhost:3000
+
+GET    /students
+POST   /students
+PUT    /students/:id
+DELETE /students/:id
+</pre>
+      </div>
+    </div>
+  </div>
+
+  <section id="features">
     <div class="container">
-      <div class="hero">
-        <div class="badge">
-          ⚡ Modern Express.js API Generator CLI
-        </div>
-
-        <h1>KSchema CLI</h1>
-
+      <div class="section-title">
+        <h2>Why Developers Use json-crud-cli</h2>
         <p>
-          Generate powerful Express.js APIs, CRUD endpoints, route hierarchies,
-          and modular backend architectures automatically using the KSchema ecosystem.
+          A lightweight and developer-friendly CLI solution for quickly creating JSON-powered CRUD APIs using Node.js and Express style workflows.
         </p>
+      </div>
 
-        <div class="buttons">
-          <a href="#installation" class="btn btn-primary">🚀 Get Started</a>
-          <a href="#commands" class="btn btn-secondary">📘 View Commands</a>
+      <div class="grid">
+        <div class="card">
+          <div class="card-icon">⚙️</div>
+          <h3>CLI Automation</h3>
+          <p>
+            Generate CRUD boilerplate instantly without manually writing repetitive route and file logic.
+          </p>
+        </div>
+
+        <div class="card">
+          <div class="card-icon">🗂️</div>
+          <h3>JSON Database</h3>
+          <p>
+            Store application data directly inside JSON files for lightweight projects and local tools.
+          </p>
+        </div>
+
+        <div class="card">
+          <div class="card-icon">🚀</div>
+          <h3>Fast Development</h3>
+          <p>
+            Build prototypes, internal dashboards, APIs, and beginner backend projects quickly.
+          </p>
+        </div>
+
+        <div class="card">
+          <div class="card-icon">📡</div>
+          <h3>REST API Ready</h3>
+          <p>
+            Supports standard CRUD style endpoints using GET, POST, PUT, and DELETE operations.
+          </p>
+        </div>
+
+        <div class="card">
+          <div class="card-icon">🧩</div>
+          <h3>Simple Architecture</h3>
+          <p>
+            Easy folder structure and readable code make it beginner-friendly and maintainable.
+          </p>
+        </div>
+
+        <div class="card">
+          <div class="card-icon">💡</div>
+          <h3>Learning Friendly</h3>
+          <p>
+            Great for understanding how backend CRUD systems work before using large databases.
+          </p>
         </div>
       </div>
     </div>
-  </header>
+  </section>
 
-  <section>
+  <section id="install">
     <div class="container">
       <div class="section-title">
-        <h2>✨ Features</h2>
-        <p>Everything you need to bootstrap scalable Express.js APIs</p>
+        <h2>Installation & Setup</h2>
+        <p>
+          Start building your JSON CRUD application in just a few commands.
+        </p>
       </div>
 
-      <div class="features-grid">
-        <div class="feature-card">
-          <div class="feature-icon">⚙️</div>
-          <h3>API Generation</h3>
-          <p>Create complete API folder structures automatically with minimal setup.</p>
+      <div class="code-block">
+<pre>
+# Install package globally
+npm install -g json-crud-cli
+
+# Create project
+mkdir my-crud-app
+cd my-crud-app
+
+# Initialize package
+npm init -y
+
+# Run CLI
+json-crud-cli
+</pre>
+      </div>
+
+      <div class="steps" style="margin-top: 2rem;">
+        <div class="step">
+          <div class="step-number">1</div>
+          <div>
+            <h3>Install Node.js & npm</h3>
+            <p>Make sure Node.js and npm are installed before using the package.</p>
+          </div>
         </div>
 
-        <div class="feature-card">
-          <div class="feature-icon">📦</div>
-          <h3>CRUD Support</h3>
-          <p>Generate CRUD endpoints instantly using command-based architecture.</p>
+        <div class="step">
+          <div class="step-number">2</div>
+          <div>
+            <h3>Install json-crud-cli</h3>
+            <p>Install the package globally using npm to access CLI commands anywhere.</p>
+          </div>
         </div>
 
-        <div class="feature-card">
-          <div class="feature-icon">🧩</div>
-          <h3>Modular Design</h3>
-          <p>Clean folder separation with scalable Express Router architecture.</p>
-        </div>
-
-        <div class="feature-card">
-          <div class="feature-icon">🚀</div>
-          <h3>Auto Routing</h3>
-          <p>Endpoints are automatically connected into Express route hierarchy.</p>
-        </div>
-
-        <div class="feature-card">
-          <div class="feature-icon">📁</div>
-          <h3>JSON Storage</h3>
-          <p>Simple JSON-based data management for lightweight applications.</p>
-        </div>
-
-        <div class="feature-card">
-          <div class="feature-icon">🔥</div>
-          <h3>Version APIs</h3>
-          <p>Supports V1, V2, and scalable API versioning patterns.</p>
+        <div class="step">
+          <div class="step-number">3</div>
+          <div>
+            <h3>Generate CRUD Boilerplate</h3>
+            <p>Create routes, controllers, JSON storage, and API structure automatically.</p>
+          </div>
         </div>
       </div>
     </div>
   </section>
 
-  <section id="installation">
+  <section id="crud">
     <div class="container">
       <div class="section-title">
-        <h2>📥 Installation</h2>
-        <p>Quick setup using NPX or Global Installation</p>
+        <h2>CRUD API Operations</h2>
+        <p>
+          Standard RESTful operations supported by JSON-based APIs.
+        </p>
       </div>
 
-      <div class="command-box">
-        <pre>npx @keshavsoft/kschema-api-gen</pre>
-      </div>
+      <div class="api-grid">
+        <div class="api-card">
+          <span class="method get">GET</span>
+          <h3>Read Data</h3>
+          <p>Retrieve all records or fetch individual records from JSON storage.</p>
 
-      <div class="command-box">
-        <pre>npm install -g @keshavsoft/kschema-api-gen
+          <div class="code-block">
+<pre>GET /students</pre>
+          </div>
+        </div>
 
-kschema-api-gen</pre>
+        <div class="api-card">
+          <span class="method post">POST</span>
+          <h3>Create Data</h3>
+          <p>Add new records into the JSON database using API requests.</p>
+
+          <div class="code-block">
+<pre>POST /students</pre>
+          </div>
+        </div>
+
+        <div class="api-card">
+          <span class="method put">PUT</span>
+          <h3>Update Data</h3>
+          <p>Modify existing records using resource identifiers.</p>
+
+          <div class="code-block">
+<pre>PUT /students/:id</pre>
+          </div>
+        </div>
+
+        <div class="api-card">
+          <span class="method delete">DELETE</span>
+          <h3>Delete Data</h3>
+          <p>Remove unnecessary records from the JSON file database.</p>
+
+          <div class="code-block">
+<pre>DELETE /students/:id</pre>
+          </div>
+        </div>
       </div>
     </div>
   </section>
 
-  <section id="commands">
+  <section id="workflow">
     <div class="container">
       <div class="section-title">
-        <h2>🛠 Available Commands</h2>
-        <p>CLI workflow to generate APIs step by step</p>
+        <h2>Example JSON Structure</h2>
+        <p>
+          Data is stored inside simple JSON files which behave like a lightweight database.
+        </p>
       </div>
 
-      <div class="timeline">
+      <div class="code-block">
+<pre>
+{
+  "students": [
+    {
+      "id": 1,
+      "name": "Rahul",
+      "course": "Node.js"
+    },
+    {
+      "id": 2,
+      "name": "Anitha",
+      "course": "Express"
+    }
+  ]
+}
+</pre>
+      </div>
 
-        <div class="timeline-item">
-          <div class="timeline-content">
-            <h3>1. StartEndPoint</h3>
-            <p>Creates the base API folder structure.</p>
-
-            <div class="code-preview">
-              <code>npx @keshavsoft/kschema-api-gen StartEndPoint</code>
-            </div>
+      <div class="grid" style="margin-top: 2rem;">
+        <div class="card">
+          <h3>Folder Structure</h3>
+          <div class="code-block">
+<pre>
+project/
+├── routes/
+├── data/
+│   └── students.json
+├── server.js
+├── package.json
+└── app.js
+</pre>
           </div>
         </div>
 
-        <div class="timeline-item">
-          <div class="timeline-content">
-            <h3>2. AddSubRoute</h3>
-            <p>Creates API version folders like V1 and V2.</p>
-
-            <div class="code-preview">
-              <code>cd Api
-npx @keshavsoft/kschema-api-gen AddSubRoute</code>
-            </div>
-          </div>
+        <div class="card">
+          <h3>Use Cases</h3>
+          <p>
+            • Beginner backend learning<br>
+            • Internal admin tools<br>
+            • Mock APIs<br>
+            • Local development environments<br>
+            • CRUD testing projects<br>
+            • Rapid prototypes
+          </p>
         </div>
-
-        <div class="timeline-item">
-          <div class="timeline-content">
-            <h3>3. AddTableName</h3>
-            <p>Create module/table folders such as Accounts or Users.</p>
-
-            <div class="code-preview">
-              <code>cd V1
-npx @keshavsoft/kschema-api-gen AddTableName</code>
-            </div>
-          </div>
-        </div>
-
-        <div class="timeline-item">
-          <div class="timeline-content">
-            <h3>4. ShowAll</h3>
-            <p>Generate GET endpoint architecture for fetching records.</p>
-
-            <div class="code-preview">
-              <code>cd KSTable1
-npx @keshavsoft/kschema-api-gen ShowAll</code>
-            </div>
-          </div>
-        </div>
-
-        <div class="timeline-item">
-          <div class="timeline-content">
-            <h3>5. CreateApi</h3>
-            <p>Automatically hooks generated endpoints into Express routes.</p>
-
-            <div class="code-preview">
-              <code>npx @keshavsoft/kschema-api-gen CreateApi Api/V1/KSTable1/ShowAll</code>
-            </div>
-          </div>
-        </div>
-
-        <div class="timeline-item">
-          <div class="timeline-content">
-            <h3>6. InsertApi</h3>
-            <p>Create POST/Insert endpoint structures instantly.</p>
-
-            <div class="code-preview">
-              <code>npx @keshavsoft/kschema-api-gen InsertApi Api/V1/KSTable1/Insert</code>
-            </div>
-          </div>
-        </div>
-
       </div>
     </div>
   </section>
 
-  <section>
+  <section id="faq">
     <div class="container">
       <div class="section-title">
-        <h2>🏗 Generated Architecture</h2>
-        <p>Clean and scalable project structure</p>
+        <h2>Frequently Asked Questions</h2>
+        <p>
+          Common questions about JSON CRUD applications and CLI workflows.
+        </p>
       </div>
 
-      <div class="architecture">
-<pre>Api/
-   V1/
-      routes.js
+      <div class="faq">
+        <details>
+          <summary>What is CRUD?</summary>
+          <p>
+            CRUD stands for Create, Read, Update, and Delete. These are the four core operations used in most backend systems and APIs.
+          </p>
+        </details>
 
-      KSTable1/
-         end-points.js
+        <details>
+          <summary>Can JSON files replace databases?</summary>
+          <p>
+            JSON files are suitable for learning, prototypes, mock APIs, and lightweight applications. Large production systems usually use databases like MongoDB or PostgreSQL.
+          </p>
+        </details>
 
-         ShowAll/
-            controller.js
-            service.js
-            errors.js</pre>
-      </div>
-    </div>
-  </section>
+        <details>
+          <summary>Is json-crud-cli beginner friendly?</summary>
+          <p>
+            Yes. It simplifies CRUD setup and helps developers understand backend concepts without complex database configuration.
+          </p>
+        </details>
 
-  <section>
-    <div class="container">
-      <div class="section-title">
-        <h2>🌐 Final Endpoint</h2>
-        <p>Access generated APIs directly in browser</p>
-      </div>
-
-      <div class="command-box">
-        <pre>GET /V1/KSTable1/ShowAll
-
-http://localhost:3000/V1/KSTable1/ShowAll</pre>
+        <details>
+          <summary>Which technologies are commonly used with it?</summary>
+          <p>
+            Node.js, Express.js, JSON Server workflows, REST APIs, and frontend frameworks like React or Angular.
+          </p>
+        </details>
       </div>
     </div>
   </section>
 
   <footer>
-    <h3>⚡ KSchema CLI</h3>
-    <p>
-      Build scalable Express.js APIs faster with automation and modular architecture.
-    </p>
-
-    <a href="#" class="btn btn-primary">⭐ Start Building</a>
+    <div class="container">
+      <h3 style="margin-bottom: 1rem;">json-crud-cli</h3>
+      <p>
+        Lightweight JSON CRUD Development • Node.js CLI • REST API Workflow
+      </p>
+      <p style="margin-top: 1rem; font-size: 0.9rem;">
+        Designed for modern developers and backend learners.
+      </p>
+    </div>
   </footer>
 
 </body>
