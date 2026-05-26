@@ -22,19 +22,18 @@ export default function showUsage(version) {
     const r = "\x1b[0m";
 
     console.log(`
-${c}🚀 json-crud-cli v${version}${r}
+${c}🚀 tailwind-todo v${version}${r}
 
 ${y}Usage:${r}
-  ${g}npx json-crud-cli${r} <command> [options]
+  ${g}npx tailwind-todo${r} <command> [options]
 
 ${y}Commands:${r}
   ${g}header${r}              a simple header
-  ${g}exportCommands${r}      a export commands
 
 ${y}Examples:${r}
-  ${gray}npx json-crud-cli header${r}
+  ${gray}npx tailwind-todo header${r}
 
 ${y}Tip:${r}
-  ${gray}npm i -g json-crud-cli${r}
+  ${gray}npm i -g tailwind-todo${r}
 `);
 }
